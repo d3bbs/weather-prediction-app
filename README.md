@@ -46,7 +46,7 @@ Welcome to the **Weather App** project! This interactive Python application prov
 
 ## 👨‍💻 Author
 
-- **Aaron Debattista**: IT Support Officer, Studying Bachelors in Computer Systems and Networks, 
+- **Aaron Debattista**: IT Support Officer, Studying Bachelors in Computer Systems and Networks 
 - [LinkedIn](https://www.linkedin.com/in/aaron-debattista-932792276/)
 - [GitHub](https://github.com/d3bbs)
 
