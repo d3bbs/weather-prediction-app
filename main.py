@@ -1,112 +1,97 @@
+import sys
 import requests
-import tkinter as tk
-from tkinter import messagebox
-from datetime import datetime
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QLineEdit, QStackedWidget, QMessageBox
+from PyQt5.QtCore import Qt
 
-# OpenWeatherMap API details
-API_KEY = 'enter_your_api_key_here'
-CITY = 'Attard, MT'
-def fetch_weather():
-    # Fetch current weather data
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={CITY}&appid={API_KEY}&units=metric"
-    response = requests.get(url)
-    current_weather = response.json()
+class WeatherApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-    # Fetch forecast data for the week
-    forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?q={CITY}&appid={API_KEY}&units=metric"
-    forecast_response = requests.get(forecast_url)
-    forecast_data = forecast_response.json()
+        self.setWindowTitle("Weather App")
+        self.setGeometry(100, 100, 400, 600)
 
-    if current_weather.get("cod") == 200 and forecast_data.get("cod") == "200":
-        # Extract current weather details
-        city = current_weather["name"]
-        temperature = current_weather["main"]["temp"]
-        weather_description = current_weather["weather"][0]["description"]
-        date = datetime.fromtimestamp(current_weather["dt"]).strftime('%Y-%m-%d %H:%M:%S')
+        # Stacked widget to manage multiple screens
+        self.stacked_widget = QStackedWidget()
+        self.setCentralWidget(self.stacked_widget)
 
-        # Display current weather information
-        global weather_info
-        weather_info = (
-            f"City: {city}\n\n"
-            f"Date: {date}\n\n"
-            f"Temperature: {temperature}°C\n\n"
-            f"Description: {weather_description.capitalize()}"
-        )
-        
-        # Extract forecast details for the current week
-        global current_week_forecast
-        current_week_forecast = "Weather Forecast for This Week:\n\n"
-        for item in forecast_data["list"][:5]:  # Limit to next 5 entries
-            forecast_date = datetime.fromtimestamp(item["dt"]).strftime('%a, %Y-%m-%d %H:%M')
-            forecast_temp = item["main"]["temp"]
-            forecast_desc = item["weather"][0]["description"]
-            current_week_forecast += f"{forecast_date}: {forecast_temp}°C, {forecast_desc.capitalize()}\n\n"
+        # Initialize the start screen and main screen
+        self.init_start_screen()
+        self.init_main_screen()
 
-        # Extract forecast details for the next week
-        global next_week_forecast
-        next_week_forecast = "Weather Forecast for Next Week:\n\n"
-        for item in forecast_data["list"][5:10]:  # Adjust to get entries for next week
-            forecast_date = datetime.fromtimestamp(item["dt"]).strftime('%a, %Y-%m-%d %H:%M')
-            forecast_temp = item["main"]["temp"]
-            forecast_desc = item["weather"][0]["description"]
-            next_week_forecast += f"{forecast_date}: {forecast_temp}°C, {forecast_desc.capitalize()}\n\n"
+    def init_start_screen(self):
+        # Start screen setup
+        start_screen = QWidget()
+        layout = QVBoxLayout()
 
-        # Show the current week's forecast by default
-        weather_label.config(text=weather_info)
-        forecast_label.config(text=current_week_forecast)
-    else:
-        messagebox.showerror("Error", "Error fetching weather data")
+        welcome_label = QLabel("Welcome to the Weather App", alignment=Qt.AlignCenter)
+        welcome_label.setStyleSheet("font-size: 20px; font-weight: bold;")
+        layout.addWidget(welcome_label)
 
-def show_current_week_forecast():
-    forecast_label.config(text=current_week_forecast)
+        start_button = QPushButton("Get Started")
+        start_button.setStyleSheet("font-size: 16px; padding: 10px;")
+        start_button.clicked.connect(self.show_main_screen)
+        layout.addWidget(start_button, alignment=Qt.AlignCenter)
 
-def show_next_week_forecast():
-    forecast_label.config(text=next_week_forecast)
+        start_screen.setLayout(layout)
+        self.stacked_widget.addWidget(start_screen)
 
-# Set up the GUI
-root = tk.Tk()
-root.title("Weather App")
-root.geometry("600x700")
-root.configure(bg="#34495E")
+    def init_main_screen(self):
+        # Main weather screen setup
+        main_screen = QWidget()
+        layout = QVBoxLayout()
 
-# Title Label
-title_label = tk.Label(root, text="Weather Forecast", font=("Helvetica", 24, "bold"), fg="white", bg="#34495E")
-title_label.pack(pady=20)
+        self.city_input = QLineEdit()
+        self.city_input.setPlaceholderText("Enter city name")
+        self.city_input.setStyleSheet("font-size: 16px; padding: 5px;")
+        layout.addWidget(self.city_input)
 
-# Frame for Current Weather
-current_frame = tk.Frame(root, bg="#1ABC9C", bd=10, relief="ridge")
-current_frame.pack(pady=15, fill="x", padx=30)
+        search_button = QPushButton("Search Weather")
+        search_button.setStyleSheet("font-size: 16px; padding: 10px;")
+        search_button.clicked.connect(self.search_weather)
+        layout.addWidget(search_button)
 
-# Current Weather Label
-current_label_title = tk.Label(current_frame, text="Current Weather", font=("Helvetica", 16, "bold"), bg="#1ABC9C", fg="white")
-current_label_title.pack(anchor="w", padx=15, pady=10)
+        self.weather_label = QLabel("", alignment=Qt.AlignCenter)
+        self.weather_label.setStyleSheet("font-size: 14px; margin-top: 20px;")
+        layout.addWidget(self.weather_label)
 
-weather_label = tk.Label(current_frame, text="", font=("Helvetica", 14, "bold"), justify="left", bg="#1ABC9C", fg="white", padx=10, pady=10)
-weather_label.pack(anchor="w", padx=15, pady=5)
+        main_screen.setLayout(layout)
+        self.stacked_widget.addWidget(main_screen)
 
-# Frame for Forecast
-forecast_frame = tk.Frame(root, bg="#3498DB", bd=10, relief="ridge")
-forecast_frame.pack(pady=15, fill="x", padx=30)
+    def show_main_screen(self):
+        self.stacked_widget.setCurrentIndex(1)
 
-# Forecast Title Label
-forecast_label_title = tk.Label(forecast_frame, text="Forecast", font=("Helvetica", 16, "bold"), bg="#3498DB", fg="white")
-forecast_label_title.pack(anchor="w", padx=15, pady=10)
+    def search_weather(self):
+        city = self.city_input.text()
+        if not city:
+            QMessageBox.warning(self, "Input Error", "Please enter a city name.")
+            return
 
-forecast_label = tk.Label(forecast_frame, text="", font=("Helvetica", 14, "bold"), justify="left", bg="#3498DB", fg="white", padx=10, pady=10)
-forecast_label.pack(anchor="w", padx=15, pady=5)
+        # Fetch weather data using Open-Meteo API
+        geocoding_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city}"
+        geocoding_response = requests.get(geocoding_url)
+        geocoding_data = geocoding_response.json()
 
-# Buttons to Toggle Forecasts
-button_frame = tk.Frame(root, bg="#34495E")
-button_frame.pack(pady=10)
+        if "results" in geocoding_data and geocoding_data["results"]:
+            latitude = geocoding_data["results"][0]["latitude"]
+            longitude = geocoding_data["results"][0]["longitude"]
 
-current_week_button = tk.Button(button_frame, text="This Week", font=("Helvetica", 12, "bold"), command=show_current_week_forecast)
-current_week_button.pack(side="left", padx=20)
+            weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current_weather=true&timezone=auto"
+            weather_response = requests.get(weather_url)
+            weather_data = weather_response.json()
 
-next_week_button = tk.Button(button_frame, text="Next Week", font=("Helvetica", 12, "bold"), command=show_next_week_forecast)
-next_week_button.pack(side="left", padx=20)
+            if "current_weather" in weather_data:
+                current_weather = weather_data["current_weather"]
+                temperature = current_weather["temperature"]
+                weather_code = current_weather["weathercode"]
+                self.weather_label.setText(f"City: {city}\nTemperature: {temperature}°C\nWeather Code: {weather_code}")
+            else:
+                QMessageBox.critical(self, "Error", "Error fetching weather data.")
+        else:
+            QMessageBox.critical(self, "Error", "City not found. Please enter a valid city name.")
 
-# Fetch and display the weather information
-fetch_weather()
-
-# Run the GUI loop
-root.mainloop()
+# Main entry point of the application
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = WeatherApp()
+    window.show()
+    sys.exit(app.exec_())
