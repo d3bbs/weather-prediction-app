@@ -44,11 +44,11 @@ Welcome to the **Weather App** project! This interactive Python application prov
 
 ---
 
-### 📚 Known Issues
+## 📚 Known Issues
 - **Limited Forecast Data**: The app currently retrieves only a limited number of forecast data points, which may not cover a full 7 days in some cases.
 - **API Dependency**: The app requires an active internet connection and a valid OpenWeatherMap API key to function properly.
 
-### 🔍 Future Enhancements
+## 🔍 Future Enhancements
 - **Customizable City Selection**: Allow users to select different cities within the app.
 - **Error Handling**: More robust error handling for API failures or incorrect data input.
 - **Weather Icons**: Display weather icons to visually represent different weather conditions.
