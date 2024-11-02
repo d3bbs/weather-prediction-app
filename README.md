@@ -1,6 +1,3 @@
-Here's an updated and refined version of your README:
-
----
 
 # Weather App - Interactive GUI for Current & Weekly Forecasts
 
@@ -95,7 +92,3 @@ For any inquiries, feedback, or collaboration opportunities, feel free to connec
 ---
 
 ### Thank you for checking out the Weather App! Enjoy staying updated with the latest weather forecasts.
-
----
-
-!
