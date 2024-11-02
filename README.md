@@ -57,7 +57,8 @@ Welcome to the **Weather App** project! This interactive Python application prov
 
 ## 📸 Screenshots
 
-![Weather App Screenshot](https://github.com/user-attachments/assets/1f63f442-d400-481e-8edd-81bc81b06c3b)
+![{EEF4A587-7E9B-4091-91E6-08816B0FACA8}](https://github.com/user-attachments/assets/daf3ec35-98d4-47d6-93d9-616d5cd43331)
+
 
 ---
 
