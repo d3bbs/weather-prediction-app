@@ -72,7 +72,7 @@ Welcome to the **Weather App** project! This interactive Python application prov
 
 ## 🔍 Future Enhancements
 
-1. **Hourly Forecast**: Show hourly temperature and weather conditions for better planning.
+1. ~~**Hourly Forecast**: Show hourly temperature and weather conditions for better planning.~~
 2. **Location Detection**: Automatically detect the user's location and show the weather for that area.
 3. **Weather Alerts**: Add notifications for severe weather conditions.
 4. **Graphical Temperature Trends**: Use graphs to display temperature trends over the week.
@@ -98,4 +98,4 @@ For any inquiries, feedback, or collaboration opportunities, feel free to connec
 
 ---
 
-This updated README reflects the latest changes and features of your app, using PyQt5 and the Open-Meteo API. Let me know if you’d like to make any more updates or have any other requests!
+!
